@@ -1,34 +1,30 @@
 <template>
   <div>
-    <!-- This is a dropdown of my sources -->
-    <source-selection v-on:$source-changed="sourceChanged"></source-selection>
-
-    <!-- This displays my articles -->
-    <article-list v-bind:source="source"></article-list>
+    <li v-for="article in articles" v-bind:key="article.id">
+      <router-link v-bind:to="{ name: 'details' }">{{article.title}}</router-link>
+    </li>
   </div>
 </template>
 
 <script>
-import SourceSelection from "./SourceSelection.vue";
-import ArticleList from "./ArticleList.vue";
 export default {
   name: "Home",
   data: function() {
     return {
-      source: ''
+      articles: []
     };
   },
 
-  components: {
-    "source-selection": SourceSelection,
-    "article-list": ArticleList
-  },
+  components: {},
 
-  methods: {
-    sourceChanged: function(source) {
-      console.log("Home: custom event detected, data is: " + source)
-      this.source = source;
-    }
+  methods: {},
+
+  created: function() {
+    this.$http
+      .get(`https://example-api4.glitch.me/api/articles`)
+      .then(function(data) {
+        this.articles = data.body.articles;
+      });
   }
 };
 </script>
